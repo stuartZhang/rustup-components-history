@@ -1,0 +1,16 @@
+{
+    "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "module",
+        "ecmaFeatures": {
+            "modules": true
+        }
+    },
+    "env": {
+        "mocha": true
+    },
+    "globals": {
+        "expect": true,
+        "sinon": true
+    }
+}

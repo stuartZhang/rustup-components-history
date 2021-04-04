@@ -1,0 +1,27 @@
+{
+    "mx-vue3-ts-desk-component": {
+        "prefix": "mx-vue-ts-desk",
+        "description": "敏行 vue3 桌面组件",
+        "body": [
+            "<template>",
+            "    <div>",
+            "        $1",
+            "    </div>",
+            "</template>",
+            "<script lang=\"ts\">",
+            "import {defineComponent} from '@vue/composition-api';",
+            "import pcLog from 'mx-general.macros/dist/log-sync.macro';",
+            "export default defineComponent({",
+            "    name: '$2',",
+            "    setup(props, context){",
+            "        $3",
+            "    }",
+            "});",
+            "</script>",
+            "<style lang=\"less\" scoped>",
+            "/* nothing */$4",
+            "</style>",
+            ""
+        ]
+    }
+}

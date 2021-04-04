@@ -1,0 +1,13 @@
+stages:
+- analysis
+
+sonarqube:
+  stage: analysis
+  tags:
+  - sonar
+  script:
+  - npm run postinstall
+  - cp package_build.json package.json
+  - minxing i
+  - npm run build
+  - sonar-scanner

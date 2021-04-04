@@ -1,0 +1,7 @@
+[auth]
+token = "4d7ffa1ddfc745959eb111331d7a6304dc4606330b3f4057a1272f1f273f3f23"
+
+[defaults]
+url = "https://sentry.io"
+org = "stuartzhang"
+project = "diagonal-demo7"

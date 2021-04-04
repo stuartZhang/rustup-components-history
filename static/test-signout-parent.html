@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>测试-登出-diagonal-demo7</title>
+    <script>
+        function onClick(event){
+            if (event.target.textContent === '登入') {
+                event.target.textContent = '登出';
+                document.cookie = 'timezone=Asia/Shanghai';
+                document.cookie = 'timezone_offset=8';
+                document.cookie = 'mx.qrlogin.channel=6db5cc67b94748c194b1446c1a371858';
+                document.cookie = 'pcWebTokenObjCookie=%7B%22access_token%22%3A%22w-30ZHBiqSzDY4M7LGjNCARn0L-XPp8Wq_XjvvGumWgeesgt%22%2C%22token_type%22%3A%22Bearer%22%2C%22expires_in%22%3A2591999%2C%22refresh_token%22%3A%22CwiAP24M8eK7Vx7EpWr7Xf1Xc2IQ1fdmdGa-R51vy6J8Hz7J%22%2C%22default_network_id%22%3A2%2C%22valid_modules%22%3A%5B%22mail%22%2C%22video_chat%22%2C%22running_man%22%2C%22file_preview%22%2C%22file_share%22%2C%22approval%22%2C%22survey%22%2C%22attendance%22%2C%22gtasks%22%2C%22ecard%22%2C%22quotation%22%2C%22work%22%2C%22im%22%2C%22mxpp%22%2C%22pc%22%2C%22appstore%22%2C%22news%22%2C%22work_circle%22%5D%2C%22licensed_modules%22%3A%7B%22im%22%3Atrue%2C%22mxpp%22%3Atrue%2C%22pc%22%3Atrue%2C%22appstore%22%3Atrue%2C%22mdm%22%3Afalse%2C%22news%22%3Atrue%2C%22strongbox%22%3Afalse%2C%22integral%22%3Afalse%2C%22skincolor%22%3Afalse%2C%22work_circle%22%3Atrue%2C%22apps%22%3A%7B%22mail%22%3Atrue%2C%22video_chat%22%3Atrue%2C%22cafe%22%3Afalse%2C%22running_man%22%3Atrue%2C%22file_preview%22%3Atrue%2C%22file_share%22%3Atrue%2C%22cloud_drive%22%3Afalse%2C%22approval%22%3Atrue%2C%22survey%22%3Atrue%2C%22attendance%22%3Atrue%2C%22gtasks%22%3Atrue%2C%22fence%22%3Afalse%2C%22ecard%22%3Atrue%2C%22meeting%22%3Afalse%2C%22exam%22%3Afalse%2C%22ranking%22%3Afalse%2C%22quotation%22%3Atrue%2C%22work%22%3Atrue%7D%2C%22mail%22%3Atrue%2C%22video_chat%22%3Atrue%2C%22cafe%22%3Afalse%2C%22running_man%22%3Atrue%2C%22file_preview%22%3Atrue%2C%22file_share%22%3Atrue%2C%22cloud_drive%22%3Afalse%2C%22approval%22%3Atrue%2C%22survey%22%3Atrue%2C%22attendance%22%3Atrue%2C%22gtasks%22%3Atrue%2C%22fence%22%3Afalse%2C%22ecard%22%3Atrue%2C%22meeting%22%3Afalse%2C%22exam%22%3Afalse%2C%22ranking%22%3Afalse%2C%22quotation%22%3Atrue%2C%22work%22%3Atrue%7D%2C%22license_meta%22%3A%7B%22cidentifier%22%3A%22%22%2C%22video_chat%22%3A%7B%22video_chat_connections%22%3A0%7D%7D%2C%22client_settings%22%3A%7B%22create_group_action%22%3Atrue%2C%22allow_copy_message%22%3Atrue%2C%22allow_screenshot%22%3Atrue%2C%22allow_create_topic%22%3Atrue%2C%22allow_others_add_topic%22%3Atrue%2C%22show_button_share%22%3Atrue%2C%22show_button_topic%22%3Atrue%2C%22show_button_report%22%3Atrue%2C%22friends_system%22%3Afalse%2C%22private_group_allow_at_all%22%3Afalse%2C%22admin_recall_any_message%22%3Atrue%2C%22display_type_after_reported%22%3A%220%22%2C%22disable_user_contact_delete_action%22%3Afalse%2C%22disable_user_contact_add_action%22%3Afalse%2C%22show_contacts%22%3Atrue%2C%22message_receipt_enable%22%3Atrue%2C%22file_download%22%3Atrue%2C%22max_circle_words%22%3A140%2C%22uploaded_file_max_size%22%3A80%7D%2C%22online_status%22%3A%7B%22pc_online%22%3Afalse%2C%22web_online%22%3Afalse%2C%22mute_if_desktop_login%22%3Afalse%7D%2C%22mx_sso_token%22%3A%22AAAAAAAAAAAAbnC1W0JATwGBWA7FT2voMA%3D%3D%22%2C%22csrf_token%22%3A%22WA5TJq0ZH4vHM5V8lDFYj0nC06Wwcmipyhry%2FcBIg5k%3D%22%7D';
+            } else {
+                event.target.textContent = '登入';
+                document.cookie = `pcWebTokenObjCookie=;expires=${new Date().toGMTString()}`
+            }
+        }
+    </script>
+</head>
+<body>
+    <p><a href="/admin.html" target="_blank">diagonal-demo7</a></p>
+    <p><button onclick="onClick(event)">登入</button></p>
+</body>
+</html>

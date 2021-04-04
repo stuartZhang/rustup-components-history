@@ -1,0 +1,129 @@
+{
+    // 使用 IntelliSense 了解相关属性。
+    // 悬停以查看现有属性的描述。
+    // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [{
+        "type": "chrome", // 要求预安装 VSCode 的 Debugger for Chrome 插件
+        "request": "attach",
+        "name": "debug attach Chrome",
+        "urlFilter": "http://192.168.*.*:9000/*.html#/",
+        "address": "127.0.0.1",
+        "port": 9223, // 在启动Chrome时，需要指定命令行参数：chrome.exe --remote-debugging-port=9222
+        // "trace": "verbose",
+        "smartStep": true,
+        "sourceMaps": true,
+        "showAsyncStacks": true,
+        "disableNetworkCache": true,
+        "targetTypes": [
+            "page",
+            "webview"
+        ],
+        "pathMapping": {
+            "/": "${workspaceFolder}/dist/bundle/admin"
+        },
+        "sourceMapPathOverrides": { // 在 VSCode Debug Console，输入 .scripts 命令，查看映射关系。
+            "webpack:///*": "${workspaceFolder}/*"
+        }
+    }, {
+        "type": "chrome", // 要求预安装 VSCode 的 Debugger for Chrome 插件
+        "request": "launch",
+        "name": "debug launch Chrome",
+        "url": "http://127.0.0.1:9000",
+        "port": 9224,
+        // "trace": "verbose",
+        "smartStep": true,
+        "sourceMaps": true,
+        "userDataDir": true,
+        "showAsyncStacks": true,
+        "disableNetworkCache": true,
+        "targetTypes": [
+            "page",
+            "webview"
+        ],
+        "pathMapping": {
+            "/": "${workspaceFolder}/dist/bundle/admin"
+        },
+        "sourceMapPathOverrides": { // 在 VSCode Debug Console，输入 .scripts 命令，查看映射关系。
+            "webpack:///*": "${workspaceFolder}/*"
+        }
+    }, {
+        "type": "firefox", // 要求预安装 VSCode 的 Debugger for Firefix 插件
+        "request": "launch",
+        "name": "debug attach Firefox",
+        "url": "http://127.0.0.1:9000",
+        "webRoot": "${workspaceRoot}",
+        "firefoxArgs": ["-start-debugger-server", "-no-remote"],
+        "profile": "default",
+        "log": {
+            "consoleLevel": {
+                "PathConversion": "Warn",
+                "default": "Warn"
+            }
+        }
+    }, {
+        "type": "edge", // 要求预安装 VSCode 的 Debugger for Edge 插件
+        "request": "launch",
+        "name": "debug attach Edge",
+        "url": "http://127.0.0.1:9000",
+        "webRoot": "${workspaceRoot}"
+    }, {
+        "type": "node",
+        "request": "launch",
+        "console": "integratedTerminal",
+        "name": "npm run dev",
+        "program": "${workspaceRoot}/node_modules/webpack-dev-server/bin/webpack-dev-server.js",
+        "cwd": "${workspaceRoot}",
+        "runtimeArgs": [
+            "--preserve-symlinks-main"
+        ],
+        "env": {
+            "DEBUG": "*:webpack-dev-server-ssoproxy:*,-debug:webpack-dev-server-ssoproxy:*,-trace:webpack-dev-server-ssoproxy:*",
+            "MOCK_DATA": "true",
+            "SSO_PROXY_TUNNEL_ENABLED": "false",
+            "SSO_PROXY_HOST": "test1.dehuinet.com", // 隧道：172.16.100.102
+            "SSO_PROXY_PORT": "8031", // 隧道：80
+            "SSO_PROXY_USERNAME": "t63", // 隧道：你的敏行账号
+            "SSO_PROXY_PASSWORD": "111111"
+        },
+        "args": [
+            "--inline",
+            "--progress",
+            "--config",
+            "build/webpack.dev.conf.js"
+        ]
+    }, {
+        "type": "node",
+        "request": "launch",
+        "console": "integratedTerminal",
+        "name": "npm run build",
+        "program": "${workspaceRoot}/build/build.js",
+        "cwd": "${workspaceRoot}",
+        "runtimeArgs": [
+            "--preserve-symlinks-main"
+        ],
+        "env": {
+            "SENTRY_ERR_TRACE": "true",
+            "LOGGING": "true",
+            "DEV_TOOLS": "true"
+        },
+        "args": [
+        ]
+    }, {
+        "type": "node",
+        "request": "launch",
+        "name": "eslint",
+        "program": "${workspaceRoot}/node_modules/eslint/bin/eslint.js",
+        "cwd": "${workspaceRoot}",
+        "runtimeArgs": [
+            "--preserve-symlinks-main"
+        ],
+        "env": {
+        },
+        "args": [
+            "src/components/ElementUiCaDemo.vue"
+            
+            
+        ]
+    }]
+}
