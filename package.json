@@ -192,6 +192,15 @@
             "activated": "_1_",
             "loginMode": "auto",
             "servers": {
+                "https://static.rust-lang.org:443": {
+                    "tunnelEnabled": false,
+                    "accounts": [
+                        {
+                            "userName": "zhy",
+                            "password": "123qwe"
+                        }
+                    ]
+                },
                 "http://dev3.dehuinet.com:8013": {
                     "tunnelEnabled": false,
                     "accounts": [

@@ -28,13 +28,7 @@ const ssoproxy = require('webpack-dev-server-ssoproxy')({
         [/^\/favicon.ico/, 'src/assets/images/favicon.ico']
     ]),
     mockData: useMock ? require('./mock') : undefined,
-    context: [
-        '/mxapproval/api_admin/v2/',
-        '/api/v1/',
-        '/api/v2/',
-        '/admin/v2/',
-        '/photos/'
-    ]
+    context: []
 });
 const checknum = {
     timestamp: new Date().getTime(),
@@ -65,8 +59,6 @@ module.exports = {
     entries,
     chunkSuffix: entries.join('~'),
     common: {
-        
-        
         checknum,
         sentryErrTrace
     },
@@ -97,7 +89,8 @@ module.exports = {
                 pathRewrite(path){
                     return `${BUILD_ASSETS_PUBLIC_ROOT}${path}`;
                 }
-            }
+            },
+            httpMore: ['/dist/']
         }),
         after: ssoproxy.after,
         // Various Dev Server settings
