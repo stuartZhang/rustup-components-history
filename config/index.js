@@ -87,10 +87,10 @@ module.exports = {
                 onError: ssoproxy.proxy.onError,
                 secure: false,
                 pathRewrite(path){
-                    return `${BUILD_ASSETS_PUBLIC_ROOT}${path}`;
+                    return path.replace(/^\/rust-lang\//, '/');
                 }
             },
-            httpMore: ['/dist/']
+            httpMore: ['/rust-lang/']
         }),
         after: ssoproxy.after,
         // Various Dev Server settings

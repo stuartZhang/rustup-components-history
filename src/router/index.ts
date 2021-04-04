@@ -8,15 +8,9 @@ export default new Router({
     routes: [
         {
             path: '/',
-            name: 'ElementUiCaDemo',
+            name: 'Main',
             component(): Promise<Vue.Import>{
-                return import(/* webpackChunkName: "ElementUiCaDemo" */'@/components/ElementUiCaDemo.vue');
-            }
-        }, {
-            path: '/oa',
-            name: 'ElementUiOaDemo',
-            component(): Promise<Vue.Import>{
-                return import(/* webpackChunkName: "ElementUiOaDemo" */'@/components/ElementUiOaDemo.vue');
+                return import(/* webpackChunkName: "Main" */'@/pages/Main.vue');
             }
         }
     ]

@@ -27,7 +27,7 @@ exports.cssLoaders = function(options){
         options: {
             multiRemUnits: [{ // iframe 切签页
                 include: ['src'],
-                remUnit: Math.sqrt(Math.pow(784, 2) + Math.pow(542, 2)) / 10, // 设计稿中被绘制区域对角线长度 除以 10。
+                remUnit: Math.sqrt(Math.pow(1366, 2) + Math.pow(625, 2)) / 10, // 设计稿中被绘制区域对角线长度 除以 10。
                 baseDpr: 1,
                 minPixelValue: 1
             }]
@@ -42,7 +42,7 @@ exports.cssLoaders = function(options){
     // generate loader string to be used with extract text plugin
     function generateLoaders(loader, loaderOptions){
         const config = require('../config');
-        const loaders = [cssLoader , px2remLoader ];
+        const loaders = [cssLoader, px2remLoader];
         if (options.usePostCSS) {
             loaders.push(postcssLoader);
         }
