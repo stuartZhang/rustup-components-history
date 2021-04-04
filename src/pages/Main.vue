@@ -15,9 +15,9 @@
             </el-form>
         </el-header>
         <el-main>
-            <el-table v-loading="loading" element-loading-text="拼命加载中" :data="tableData" border>
-                <el-table-column fixed prop="name" label="组件" width="100" />
-                <el-table-column v-for="col of columns" :key="col.label" :prop="col.label" :label="col.label" align="center" />
+            <el-table v-loading="loading" height="500" element-loading-text="拼命加载中" :data="tableData" border>
+                <el-table-column fixed prop="name" label="组件" width="110" />
+                <el-table-column width="100" v-for="col of columns" :key="col.label" :prop="col.label" :label="col.label" align="center" />
             </el-table>
         </el-main>
     </el-container>
@@ -32,7 +32,7 @@ export default defineComponent({
         const axios = context.parent.$axios;
         const moment = context.parent.$moment;
         const formData = reactive({
-            dateRange: [moment('2020-08-20', 'YYYY-MM-DD').toDate(), moment('2020-08-21', 'YYYY-MM-DD').toDate()],
+            dateRange: [moment('2020-11-01', 'YYYY-MM-DD').toDate(), moment('2020-11-30', 'YYYY-MM-DD').toDate()],
             channel: 'nightly',
             target: 'x86_64-pc-windows-gnu'
         });
@@ -56,19 +56,33 @@ export default defineComponent({
                 const endMom = moment(endDate);
                 const days = [];
                 const components = new Set();
+                const promises = [];
                 while (startMom.isSameOrBefore(endMom)) {
                     const date = startMom.format('YYYY-MM-DD');
-                    const dayItems = await requestSingleDay(date);
-                    const compItems = _.groupBy(dayItems, 'component');
-                    const compNames = Object.keys(compItems);
-                    compNames.forEach(compName => components.add(compName));
-                    days.push({
-                        date,
-                        compNames,
-                        dayItems
-                    });
+                    promises.push(requestSingleDay(date).then(dayItems => {
+                        const compItems = _.groupBy(dayItems, 'component');
+                        const compNames = Object.keys(compItems);
+                        compNames.forEach(compName => components.add(compName));
+                        days.push({
+                            date,
+                            compNames,
+                            dayItems
+                        });
+                    }));
                     startMom.add(1, 'days');
                 }
+                await Promise.all(promises);
+                days.sort((a, b) => {
+                    const aa = moment(a.date, 'YYYY-MM-DD');
+                    const bb = moment(b.date, 'YYYY-MM-DD');
+                    if (aa.isBefore(bb)) {
+                        return -1;
+                    }
+                    if (aa.isAfter(bb)) {
+                        return 1;
+                    }
+                    return 0;
+                });
                 columns.value = days.map(day => ({
                     label: day.date
                 }));
