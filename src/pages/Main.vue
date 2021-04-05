@@ -52,9 +52,7 @@ export default defineComponent({
                 searchResult.loading = true;
                 searchResult.data.length = 0;
                 searchResult.columns.length = 0;
-                const [startDate, endDate] = searchForm.dateRange;
-                const startMom = moment(startDate);
-                const endMom = moment(endDate);
+                const [startMom, endMom] = searchForm.dateRange.map(date => moment(date));
                 const days = [];
                 const components = new Set();
                 const promises = [];
