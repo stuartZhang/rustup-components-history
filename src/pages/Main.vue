@@ -24,7 +24,12 @@
         <el-main class="search-result">
             <el-table height="100%" v-loading="searchResult.loading" :element-loading-text="searchResult.progress" :data="searchResult.data" border :header-cell-class-name="headCellClass">
                 <el-table-column fixed prop="name" label="组件" width="110" v-if="searchResult.data.length > 0" />
-                <el-table-column width="100" v-for="col of searchResult.columns" :key="col.label" :prop="col.label" :label="col.label" align="center" />
+                <el-table-column width="100" v-for="col of searchResult.columns" :key="col.label" :prop="col.label" :label="col.label" align="center">
+                    <template slot-scope="{row, column}">
+                        <i class="el-icon-check" v-if="row[column.label] === CHECKED" />
+                        <i class="el-icon-close" v-else />
+                    </template>
+                </el-table-column>
             </el-table>
         </el-main>
     </el-container>
@@ -76,6 +81,7 @@ export default defineComponent({
             searchFormRef,
             searchForm,
             searchResult,
+            CHECKED: COMPONENT_CHECK.YES,
             headCellClass({column, columnIndex}){
                 if (columnIndex > 0 && searchResult.columns.length > 0 && searchResult.data.length > 0) {
                     const status = searchResult.data.map(cell => cell[column.label]);
