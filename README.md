@@ -32,4 +32,44 @@
 
 官方[Rustup components availability tool](https://github.com/rust-lang/rustup-components-history#rustup-components-availability-tool)在线工具罗列的`nightly - rustup toolchain`，我都试了个遍也没有避开`error: linking with rust-lld failed`错误。所以，我需要回退到更早得多的版本。即，官方[Rustup components availability tool](https://github.com/rust-lang/rustup-components-history#rustup-components-availability-tool)在线工具并**没能**提供**组件完整性报告**的版本。没有【组件完整性报告】而一个版本一个版本地试，那得是多么缓慢与痛苦的过程呀！
 
-于是，我下定决心要做这么一款工具。还好，不是从头做。至少，后端[Rust Restful API](https://static.rust-lang.org/dist/2020-06-18/)是现成的，并且还支持`CORS`。这样事情就简单多了。
+于是，我下定决心要做这么一款工具。还好，不是从头做。至少，后端[Rust Restful API](https://static.rust-lang.org/dist/2020-06-18/)是现成的，并且还支持`CORS`。这样前端的事情就简单多了。
+
+## 工作原因
+
+1. 首先，根据【发布日期】区间搜索条件，逐天地调用`https://static.rust-lang.org/?prefix=***&marker=***`接口，从而获得每一天的`nightly rustup toolchain`的发布版本信息。
+2. 然后，对后端返回的数据，根据【发布频道】与【目标平台】做过滤。
+3. 接着，再重新组织数据为
+   1. 以组织为行
+   2. 以日期为列
+   的二维数据结构。
+
+大约就这么简单吧。其两、三个小时左右的工作量。`webpack4 + babel7 + ts4 + scss + vue3`真香！
+
+## 如何使用这款工具
+
+我没有条件把这个静态网页部署到某个公网服务器上。但是，你可以把整个工程`git clone`到你本地。然后，本地运行。
+
+### 系统要求
+
+1. 要求`node`版本大于等于`10.x`，同时小于等`12.x`。
+2. 安装命令行工具[@minxing/cli](http://npm.dehuinet.com:8100/-/web/detail/@minxing/cli)
+
+   ```shell
+   npm i -g @minxing/cli@latest --registry=http://npm.dehuinet.com:8100
+   ```
+
+   因为工程里的许多依赖都来自于公司的`npm`私有云。
+
+### 方案一步骤
+
+1. 去到工程根目录
+2. 执行`minxing i`安装依赖
+3. 执行`npm run dev`。然后，你本地的默认浏览器就会自动打开网址`http://127.0.0.1:9000/web_apps/rustup-components-history/`
+
+### 方案二步骤
+
+1. 去到工程根目录
+2. 执行`minxing i`安装依赖
+3. 执行`npm run build`。
+4. 将`dist`文件夹下的内容，`scp`上传到你们的内网`web server`目录内。
+5. 或在`dist`目录下，执行`http-server`，便可直接打开网页了。
