@@ -22,7 +22,7 @@
             </el-form>
         </el-header>
         <el-main class="search-result">
-            <el-table height="100%" v-loading="searchResult.loading" :element-loading-text="searchResult.progress" :data="searchResult.data" border>
+            <el-table height="100%" v-loading="searchResult.loading" :element-loading-text="searchResult.progress" :data="searchResult.data" border :header-cell-class-name="headCellClass">
                 <el-table-column fixed prop="name" label="组件" width="110" v-if="searchResult.data.length > 0" />
                 <el-table-column width="100" v-for="col of searchResult.columns" :key="col.label" :prop="col.label" :label="col.label" align="center" />
             </el-table>
@@ -76,6 +76,19 @@ export default defineComponent({
             searchFormRef,
             searchForm,
             searchResult,
+            headCellClass({column, columnIndex}){
+                if (columnIndex > 0 && searchResult.columns.length > 0 && searchResult.data.length > 0) {
+                    const status = searchResult.data.map(cell => cell[column.label]);
+                    if (status.every(s => s === COMPONENT_CHECK.YES)) {
+                        return 'preferable-build';
+                    }
+                    if (status.every(s => s === COMPONENT_CHECK.NO)) {
+                        return 'nullified-build';
+                    }
+                    return 'imperfect-build';
+                }
+                return '';
+            },
             async onClick(){
                 if (searchResult.loading) {
                     return;
@@ -136,9 +149,9 @@ export default defineComponent({
                         };
                         days.forEach(day => {
                             if (~day.compNames.indexOf(compName)) {
-                                row[day.date] = 'Y';
+                                row[day.date] = COMPONENT_CHECK.YES;
                             } else {
-                                row[day.date] = '-';
+                                row[day.date] = COMPONENT_CHECK.NO;
                             }
                         });
                         searchResult.data.push(row);
@@ -158,7 +171,7 @@ export default defineComponent({
                 component: item.fileName.replace(`-${postfix}`, '')
             })));
             function request(date, marker, result = []){
-                return axios.get('https://static.rust-lang.org/', {
+                return axios.get(`${RUST_HOST}/`, {
                     params: {
                         prefix: `dist/${date}`,
                         marker
@@ -191,7 +204,7 @@ export default defineComponent({
                         }
                         lastMarker = key.textContent;
                         result.push({
-                            downloadUrl: `https://static.rust-lang.org/${key.textContent}`,
+                            downloadUrl: `${RUST_HOST}/${key.textContent}`,
                             fileName: key.textContent.substr(Number(key.textContent.lastIndexOf('/')) + 1),
                             fileSize: renderFileSize(parseInt(size.textContent)),
                             lastModified: lastModified.textContent
@@ -224,6 +237,8 @@ function renderFileSize(n){
         return Math.round(n * 100) / 100;
     }
 }
+const COMPONENT_CHECK = {YES: 'Y', NO: '-'};
+const RUST_HOST = 'https://static.rust-lang.org';
 const CHANNELS = ['stable', 'beta', 'nightly'];
 const TARGETS = ['aarch64-unknown-linux-gnu', 'i686-pc-windows-gnu', 'i686-pc-windows-msvc', 'i686-unknown-linux-gnu', 'x86_64-apple-darwin', 'x86_64-pc-windows-gnu', 'x86_64-pc-windows-msvc', 'x86_64-unknown-linux-gnu', 'aarch64-apple-darwin', 'aarch64-apple-ios', 'aarch64-fuchsia', 'aarch64-linux-android', 'aarch64-pc-windows-msvc', 'aarch64-unknown-linux-musl', 'arm-linux-androideabi', 'arm-unknown-linux-gnueabi', 'arm-unknown-linux-gnueabihf', 'arm-unknown-linux-musleabi', 'arm-unknown-linux-musleabihf', 'armv5te-unknown-linux-gnueabi', 'armv7-linux-androideabi', 'armv7-unknown-linux-gnueabihf', 'armv7-unknown-linux-musleabihf', 'asmjs-unknown-emscripten', 'i586-pc-windows-msvc', 'i586-unknown-linux-gnu', 'i586-unknown-linux-musl', 'i686-linux-android', 'i686-unknown-freebsd', 'i686-unknown-linux-musl', 'mips-unknown-linux-gnu', 'mips-unknown-linux-musl', 'mips64-unknown-linux-gnuabi64', 'mips64el-unknown-linux-gnuabi64', 'mipsel-unknown-linux-gnu', 'mipsel-unknown-linux-musl', 'powerpc-unknown-linux-gnu', 'powerpc64-unknown-linux-gnu', 'powerpc64le-unknown-linux-gnu', 's390x-unknown-linux-gnu', 'sparc64-unknown-linux-gnu', 'sparcv9-sun-solaris', 'wasm32-unknown-emscripten', 'wasm32-unknown-unknown', 'wasm32-wasi', 'x86_64-apple-ios', 'x86_64-fuchsia', 'x86_64-linux-android', 'x86_64-unknown-freebsd', 'x86_64-unknown-illumos', 'x86_64-unknown-linux-gnux32', 'x86_64-unknown-linux-musl', 'x86_64-unknown-netbsd', 'x86_64-unknown-redox', 'thumbv6m-none-eabi', 'thumbv7em-none-eabi', 'thumbv7em-none-eabihf', 'thumbv7m-none-eabi', 'aarch64-unknown-none', 'aarch64-unknown-none-softfloat', 'armebv7r-none-eabi', 'armebv7r-none-eabihf', 'armv5te-unknown-linux-musleabi', 'armv7-unknown-linux-gnueabi', 'armv7-unknown-linux-musleabi', 'armv7a-none-eabi', 'armv7r-none-eabi', 'armv7r-none-eabihf', 'mips64-unknown-linux-muslabi64', 'mips64el-unknown-linux-muslabi64', 'nvptx64-nvidia-cuda', 'riscv32i-unknown-none-elf', 'riscv32imac-unknown-none-elf', 'riscv32imc-unknown-none-elf', 'riscv64gc-unknown-linux-gnu', 'riscv64gc-unknown-none-elf', 'riscv64imac-unknown-none-elf', 'thumbv7neon-linux-androideabi', 'thumbv7neon-unknown-linux-gnueabihf', 'thumbv8m.base-none-eabi', 'thumbv8m.main-none-eabi', 'thumbv8m.main-none-eabihf', 'x86_64-fortanix-unknown-sgx', 'x86_64-pc-solaris'];
 </script>
@@ -247,5 +262,16 @@ const TARGETS = ['aarch64-unknown-linux-gnu', 'i686-pc-windows-gnu', 'i686-pc-wi
 }
 .search-result {
     flex-grow: 1;
+    /deep/ .el-table__header .is-leaf {
+        &.preferable-build {
+            color: #67C23A;
+        }
+        &.imperfect-build {
+            color: #E6A23C;
+        }
+        &.nullified-build {
+            color: #F56C6C;
+        }
+    }
 }
 </style>
