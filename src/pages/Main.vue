@@ -1,29 +1,30 @@
 <template>
     <el-container>
         <el-header class="search-bar">
-            <el-form inline :model="formData" class="search-form">
+            <h2 class="header"><code>rustup</code>组件历史状态表</h2>
+            <el-form inline :model="searchForm" class="search-form">
                 <el-form-item label="频道">
-                    <el-input v-model="formData.channel" placeholder="请输入内容" />
+                    <el-input v-model="searchForm.channel" placeholder="请输入内容" />
                 </el-form-item>
                 <el-form-item label="目标">
-                    <el-input v-model="formData.target" placeholder="请输入内容" />
+                    <el-input v-model="searchForm.target" placeholder="请输入内容" />
                 </el-form-item>
                 <el-form-item label="时间区间">
-                    <el-date-picker v-model="formData.dateRange" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" />
+                    <el-date-picker v-model="searchForm.dateRange" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" />
                 </el-form-item>
                 <el-button type="primary" @click.prevent.stop="onClick">查询</el-button>
             </el-form>
         </el-header>
         <el-main>
-            <el-table v-loading="loading" height="500" element-loading-text="拼命加载中" :data="tableData" border>
+            <el-table v-loading="searchResult.loading" height="500" element-loading-text="拼命加载中" :data="searchResult.data" border>
                 <el-table-column fixed prop="name" label="组件" width="110" />
-                <el-table-column width="100" v-for="col of columns" :key="col.label" :prop="col.label" :label="col.label" align="center" />
+                <el-table-column width="100" v-for="col of searchResult.columns" :key="col.label" :prop="col.label" :label="col.label" align="center" />
             </el-table>
         </el-main>
     </el-container>
 </template>
 <script lang="ts">
-import {defineComponent, reactive, ref} from '@vue/composition-api';
+import {defineComponent, reactive} from '@vue/composition-api';
 import pcLog from 'mx-general.macros/dist/log-sync.macro';
 import _ from 'underscore';
 export default defineComponent({
@@ -31,27 +32,27 @@ export default defineComponent({
     setup(props, context){ // eslint-disable-line max-lines-per-function
         const axios = context.parent.$axios;
         const moment = context.parent.$moment;
-        const formData = reactive({
+        const searchForm = reactive({
             dateRange: [moment('2020-11-01', 'YYYY-MM-DD').toDate(), moment('2020-11-30', 'YYYY-MM-DD').toDate()],
             channel: 'nightly',
             target: 'x86_64-pc-windows-gnu'
         });
-        const loading = ref(false);
-        const columns = ref([]);
-        const tableData = ref([]);
+        const searchResult = reactive({
+            loading: false,
+            columns: [],
+            data: []
+        });
         return {
-            loading,
-            formData,
-            columns,
-            tableData,
+            searchResult,
+            searchForm,
             async onClick(){
-                if (loading.value) {
+                if (searchResult.loading) {
                     return;
                 }
-                loading.value = true;
-                tableData.value.length = 0;
-                columns.value.length = 0;
-                const [startDate, endDate] = formData.dateRange;
+                searchResult.loading = true;
+                searchResult.data.length = 0;
+                searchResult.columns.length = 0;
+                const [startDate, endDate] = searchForm.dateRange;
                 const startMom = moment(startDate);
                 const endMom = moment(endDate);
                 const days = [];
@@ -83,7 +84,7 @@ export default defineComponent({
                     }
                     return 0;
                 });
-                columns.value = days.map(day => ({
+                searchResult.columns = days.map(day => ({
                     label: day.date
                 }));
                 components.forEach(compName => {
@@ -97,13 +98,13 @@ export default defineComponent({
                             row[day.date] = '-';
                         }
                     });
-                    tableData.value.push(row);
+                    searchResult.data.push(row);
                 });
-                loading.value = false;
+                searchResult.loading = false;
             }
         };
         function requestSingleDay(date){
-            const postfix = `${formData.channel}-${formData.target}.tar.gz`;
+            const postfix = `${searchForm.channel}-${searchForm.target}.tar.gz`;
             return request(date, '').then(result => result.filter(item => item.fileName.endsWith(postfix)).map(item => ({
                 ...item,
                 component: item.fileName.replace(`-${postfix}`, '')
@@ -155,29 +156,32 @@ export default defineComponent({
             }
             return result;
         }
-        function renderFileSize(n){
-            function renderTwo(n){
-                return Math.round(n * 100) / 100;
-            }
-            if (n < 1024) {
-                return `${renderTwo(n)} B`;
-            }
-            n = n / 1024;
-            if (n < 1024) {
-                return `${renderTwo(n)} KiB`;
-            }
-            n = n / 1024;
-            if (n < 1024) {
-                return `${renderTwo(n)} MiB`;
-            }
-            n = n / 1024;
-            return `${renderTwo(n)} GiB`;
-        }
     }
 });
+function renderFileSize(n){
+    function renderTwo(n){
+        return Math.round(n * 100) / 100;
+    }
+    if (n < 1024) {
+        return `${renderTwo(n)} B`;
+    }
+    n = n / 1024;
+    if (n < 1024) {
+        return `${renderTwo(n)} KiB`;
+    }
+    n = n / 1024;
+    if (n < 1024) {
+        return `${renderTwo(n)} MiB`;
+    }
+    n = n / 1024;
+    return `${renderTwo(n)} GiB`;
+}
 </script>
 <style lang="scss" scoped>
 .search-bar {
     height: auto !important;
+    .header {
+        text-align: center;
+    }
 }
 </style>
