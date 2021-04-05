@@ -15,8 +15,8 @@
                 <el-button type="primary" @click.prevent.stop="onClick">查询</el-button>
             </el-form>
         </el-header>
-        <el-main>
-            <el-table v-loading="searchResult.loading" height="500" element-loading-text="拼命加载中" :data="searchResult.data" border>
+        <el-main class="search-result">
+            <el-table v-loading="searchResult.loading" height="100%" element-loading-text="拼命加载中" :data="searchResult.data" border>
                 <el-table-column fixed prop="name" label="组件" width="110" />
                 <el-table-column width="100" v-for="col of searchResult.columns" :key="col.label" :prop="col.label" :label="col.label" align="center" />
             </el-table>
@@ -181,5 +181,8 @@ function renderFileSize(n){
     .header {
         text-align: center;
     }
+}
+.search-result {
+    flex-grow: 1;
 }
 </style>
