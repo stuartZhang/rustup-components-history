@@ -1,7 +1,0 @@
-{
-    "/mxapproval/api_admin/v2/approval/oauth/domainIds": {
-        "feedbackErr": false,
-        "errCode": "20010",
-        "errMsg": "获取失败"
-    }
-}

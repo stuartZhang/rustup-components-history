@@ -11,7 +11,6 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin');
-const {enhanceDevServer} = require('webpack-dev-server-ssoproxy/helpers');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 //
 const utils = require('./utils');
@@ -95,12 +94,12 @@ let devWebpackConfig = {
             filename: config.dev.index[entry],
             template: config.dev.template[entry],
             assetsSubDirectory: config.dev.assetsSubDirectory,
-            chunks: [ `px2rem~${config.chunkSuffix}`,  `sentry~${config.chunkSuffix}`, entry] ,
+            chunks: [`px2rem~${config.chunkSuffix}`, `sentry~${config.chunkSuffix}`, entry],
             mount: {
                 [`px2rem~${config.chunkSuffix}`]: {
                     js: 'head'
                 }
-            } 
+            }
         })),
         ...utils.getPreloadPlugins(),
         // copy custom static assets
@@ -130,7 +129,7 @@ if (/^eslint(?:Server)?\.js$/i.test(path.basename(require.main.filename)) ||
         dryRun: false,
         dot: true,
         ignore: []
-    }).then(() => enhanceDevServer(devWebpackConfig)).then(() => new Promise((resolve, reject) => {
+    }).then(() => new Promise((resolve, reject) => {
         portfinder.basePort = process.env.PORT || config.dev.port;
         portfinder.getPort((err, port) => {
             if (err) {
