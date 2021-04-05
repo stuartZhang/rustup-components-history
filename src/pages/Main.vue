@@ -23,7 +23,7 @@
         </el-header>
         <el-main class="search-result">
             <el-table height="100%" v-loading="searchResult.loading" :element-loading-text="searchResult.progress" :data="searchResult.data" border :header-cell-class-name="headCellClass">
-                <el-table-column fixed prop="name" label="组件" width="100" v-if="searchResult.data.length > 0" />
+                <el-table-column fixed prop="name" label="组件" width="115" v-if="searchResult.data.length > 0" />
                 <el-table-column fixed prop="lastAvailableDisplay" label="最后发布时间" width="110" v-if="searchResult.data.length > 0" />
                 <el-table-column width="100" v-for="col of searchResult.columns" :key="col.label" :prop="col.label" :label="col.label" align="center">
                     <template slot-scope="{row, column}">
