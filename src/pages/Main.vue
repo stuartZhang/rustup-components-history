@@ -109,59 +109,56 @@ export default defineComponent({
                 ...item,
                 component: item.fileName.replace(`-${postfix}`, '')
             })));
-        }
-        function request(date, marker, result = []){
-            return axios.get('https://static.rust-lang.org/', {
-                params: {
-                    prefix: `dist/${date}`,
-                    marker
-                }
-            }).then(response => handle(result, date, new DOMParser().parseFromString(response.data, 'text/xml')));
-        }
-        function handle(result, date, data){
-            const root = data.documentElement;
-            let truncated = false;
-            let lastMarker;
-            for (const child of root.children) {
-                if (child.tagName === 'IsTruncated') {
-                    truncated = child.textContent === 'true';
-                }
-                if (child.tagName !== 'Contents') {
-                    continue;
-                }
-                let key = null;
-                let size = null;
-                let lastModified = null;
-                for (const node of child.children) {
-                    if (node.tagName === 'Key') {
-                        key = node;
+            function request(date, marker, result = []){
+                return axios.get('https://static.rust-lang.org/', {
+                    params: {
+                        prefix: `dist/${date}`,
+                        marker
                     }
-                    if (node.tagName === 'LastModified') {
-                        lastModified = node;
+                }).then(response => handle(result, date, new DOMParser().parseFromString(response.data, 'text/xml')));
+                function handle(result, date, data){
+                    const root = data.documentElement;
+                    let truncated = false;
+                    let lastMarker;
+                    for (const child of root.children) {
+                        if (child.tagName === 'IsTruncated') {
+                            truncated = child.textContent === 'true';
+                        }
+                        if (child.tagName !== 'Contents') {
+                            continue;
+                        }
+                        let key = null;
+                        let size = null;
+                        let lastModified = null;
+                        for (const node of child.children) {
+                            if (node.tagName === 'Key') {
+                                key = node;
+                            }
+                            if (node.tagName === 'LastModified') {
+                                lastModified = node;
+                            }
+                            if (node.tagName === 'Size') {
+                                size = node;
+                            }
+                        }
+                        lastMarker = key.textContent;
+                        result.push({
+                            downloadUrl: `https://static.rust-lang.org/${key.textContent}`,
+                            fileName: key.textContent.substr(Number(key.textContent.lastIndexOf('/')) + 1),
+                            fileSize: renderFileSize(parseInt(size.textContent)),
+                            lastModified: lastModified.textContent
+                        });
                     }
-                    if (node.tagName === 'Size') {
-                        size = node;
+                    if (truncated) {
+                        return request(date, lastMarker, result);
                     }
+                    return result;
                 }
-                lastMarker = key.textContent;
-                result.push({
-                    downloadUrl: `/${key.textContent}`,
-                    fileName: key.textContent.substr(Number(key.textContent.lastIndexOf('/')) + 1),
-                    fileSize: renderFileSize(parseInt(size.textContent)),
-                    lastModified: lastModified.textContent
-                });
             }
-            if (truncated) {
-                return request(date, lastMarker, result);
-            }
-            return result;
         }
     }
 });
 function renderFileSize(n){
-    function renderTwo(n){
-        return Math.round(n * 100) / 100;
-    }
     if (n < 1024) {
         return `${renderTwo(n)} B`;
     }
@@ -175,6 +172,9 @@ function renderFileSize(n){
     }
     n = n / 1024;
     return `${renderTwo(n)} GiB`;
+    function renderTwo(n){
+        return Math.round(n * 100) / 100;
+    }
 }
 </script>
 <style lang="scss" scoped>
