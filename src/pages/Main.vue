@@ -69,6 +69,16 @@ export default defineComponent({
                     required: true,
                     message: '目标不能是空',
                     trigger: 'blur'
+                }],
+                dateRange: [{
+                    required: true,
+                    trigger: 'blur',
+                    validator(rule, value, callback){
+                        if (value.every(date => date instanceof Date)) {
+                            return callback();
+                        }
+                        return callback(new Error('发布时间范围不能是空'));
+                    }
                 }]
             }
         });
