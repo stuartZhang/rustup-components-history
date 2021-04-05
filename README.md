@@ -8,7 +8,7 @@
 2. （交叉）编译的目标平台`target`
 3. 发布时间（范围）
 
-生成`Nightly Artifact`的组件可用性报告。甚至，它还能
+生成任意时段`Nightly Artifact`的组件可用性报告。甚至，它还能
 
 1. 用绿色高亮出`profile = complete`的`Nightly Artifact`
 2. 用黄色高亮出`profile = default`的`Nightly Artifact`
