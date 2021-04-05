@@ -2,7 +2,7 @@
 #encoding=utf-8
 require 'fileutils'
 DEPLOY_PATH = "/home/ewhine/deploy/web_apps"
-PROJECT_NAME = "diagonal-demo7"
+PROJECT_NAME = "rustup-components-history"
 APP_PATH = "#{DEPLOY_PATH}/#{PROJECT_NAME}"
 OLD_APP_PATH = "#{APP_PATH}.old"
 OLD_DEPLOY_PATH = '#{DEPLOY_PATH}.old'

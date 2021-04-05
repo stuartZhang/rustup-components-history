@@ -1,6 +1,6 @@
-# diagonal-demo7
+# rustup-components-history
 
-> diagonal-demo7 的 管理界面前端。
+> rustup-components-history 的 管理界面前端。
 
 ## `Jenkins`打包说明
 

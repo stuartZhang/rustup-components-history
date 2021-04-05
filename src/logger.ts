@@ -35,7 +35,7 @@ pcLog.transformRegister((...args) => window.__mxMacroHooks__[process.env.MACRO_L
 pcLog.afterRegister((...args) => window.__mxMacroHooks__[process.env.MACRO_LOG_POST_PROCESSOR](...args) as boolean);
 
 pcLog.time('初始化数据库日志表');
-enableDBLogs(6, 'diagonal-demo7', true).then(
+enableDBLogs(6, 'rustup-components-history', true).then(
     () => pcLog.timeEnd('初始化数据库日志表'),
     () => {
         pcLog.info('平台不支持 indexeddb');
@@ -86,7 +86,7 @@ window.addEventListener('unhandledrejection', event => {
 const date = new Date(process.env.CHECKNUM.timestamp);
 const title = 'H5程序分支说明';
 const identity = {
-    'title': 'diagonal-demo7',
+    'title': 'rustup-components-history',
     'Git Branch': process.env.CHECKNUM.git.branchName,
     'Git Tag': process.env.CHECKNUM.git.tagName,
     '打包时间': `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`

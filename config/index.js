@@ -5,31 +5,9 @@
   see http://vuejs-templates.github.io/webpack for documentation.
  */
 const path = require('path');
-const webpack = require('webpack');
 const ip = require('quick-local-ip-stzhang');
 const {extractBuildArg, getGitInfo, resolve} = require('../build/utils');
-const useMock = extractBuildArg('--mock-data', 'MOCK_DATA', 'boolean');
 const sentryErrTrace = extractBuildArg('--sentry-err-trace', 'SENTRY_ERR_TRACE', 'boolean');
-const tunnelEnabled = extractBuildArg('--tunnel-enabled', 'SSO_PROXY_TUNNEL_ENABLED', 'boolean');
-
-const ssoproxy = require('webpack-dev-server-ssoproxy')({
-    // logServer: 'https://www.minxing365.com',
-    webpack,
-    protocol: process.env.SSO_PROXY_PROTOCOL,
-    host: process.env.SSO_PROXY_HOST,
-    port: process.env.SSO_PROXY_PORT,
-    userName: process.env.SSO_PROXY_USERNAME,
-    password: process.env.SSO_PROXY_PASSWORD,
-    tunnelEnabled,
-    redirectPath: `/dehuinet/apps/sso_redirect?url=${encodeURIComponent('/mxapproval/admin.html')}`,
-    outputDir: 'dist',
-    dbgJsSuffix: '-dev_dbg.js',
-    mappers: new Map([ // 指向文件目录的其它位置。
-        [/^\/favicon.ico/, 'src/assets/images/favicon.ico']
-    ]),
-    mockData: useMock ? require('./mock') : undefined,
-    context: []
-});
 const checknum = {
     timestamp: new Date().getTime(),
     git: getGitInfo()
@@ -63,36 +41,14 @@ module.exports = {
         sentryErrTrace
     },
     dev: {
-        useMock,
         index: indexPages,
         template: templates,
         baseURL,
         // Paths
         assetsRoot: path.join(DIST_PREFIX, '.tmp-dev'),
         assetsSubDirectory: BUILD_ASSETS_SUB_DIRECTORY,
-        assetsPublicPath: `${baseURL}/web_apps/diagonal-demo7/`,
-        contentBase: [...ssoproxy.mockDataConf, DIST_PREFIX],
-        before(app, server, compiler){
-            const middleware = ['inject-token'];
-            if (useMock) {
-                middleware.unshift('mock', 'parse-body');
-            }
-            ssoproxy.beforeBuilder(middleware).bind(this)(app, server, compiler);
-        },
-        proxyTable: ssoproxy.contextTable({
-            config: {
-                target: ssoproxy.targetUrl,
-                onProxyReq: ssoproxy.proxy.onProxyReq,
-                onProxyRes: ssoproxy.proxy.onProxyRes,
-                onError: ssoproxy.proxy.onError,
-                secure: false,
-                pathRewrite(path){
-                    return path.replace(/^\/rust-lang\//, '/');
-                }
-            },
-            httpMore: ['/rust-lang/']
-        }),
-        after: ssoproxy.after,
+        assetsPublicPath: `${baseURL}/web_apps/rustup-components-history/`,
+        contentBase: [DIST_PREFIX],
         // Various Dev Server settings
         host: hostname,
         port,

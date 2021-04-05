@@ -1,7 +1,7 @@
 {
-    "name": "diagonal-demo7",
+    "name": "rustup-components-history",
     "version": "1.0.0",
-    "description": "diagonal-demo7 微服务管理端",
+    "description": "rustup-components-history 微服务管理端",
     "author": "stuart_zhang <stuartpage@qq.com>",
     "private": true,
     "scripts": {

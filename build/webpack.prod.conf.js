@@ -180,7 +180,7 @@ module.exports = cliEnv => { // eslint-disable-line max-lines-per-function
                 [new SentryCliPlugin({
                     include: config.build.assetsRoot,
                     release: JSON.parse(configEnv.RELEASE_VERSION),
-                    urlPrefix: '~/web_apps/diagonal-demo7'
+                    urlPrefix: '~/web_apps/rustup-components-history'
                 })] :
                 [],
             ...config.build.productionGzip && isAllFeatures ?
