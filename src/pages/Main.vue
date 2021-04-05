@@ -23,7 +23,8 @@
         </el-header>
         <el-main class="search-result">
             <el-table height="100%" v-loading="searchResult.loading" :element-loading-text="searchResult.progress" :data="searchResult.data" border :header-cell-class-name="headCellClass">
-                <el-table-column fixed prop="name" label="组件" width="110" v-if="searchResult.data.length > 0" />
+                <el-table-column fixed prop="name" label="组件" width="100" v-if="searchResult.data.length > 0" />
+                <el-table-column fixed prop="lastAvailableDisplay" label="最后发布时间" width="110" v-if="searchResult.data.length > 0" />
                 <el-table-column width="100" v-for="col of searchResult.columns" :key="col.label" :prop="col.label" :label="col.label" align="center">
                     <template slot-scope="{row, column}">
                         <i class="el-icon-check" v-if="row[column.label] === CHECKED" />
@@ -83,7 +84,7 @@ export default defineComponent({
             searchResult,
             CHECKED: COMPONENT_CHECK.YES,
             headCellClass({column, columnIndex}){
-                if (columnIndex > 0 && searchResult.columns.length > 0 && searchResult.data.length > 0) {
+                if (columnIndex > 1 && searchResult.columns.length > 0 && searchResult.data.length > 0) {
                     const status = searchResult.data.map(cell => cell[column.label]);
                     if (status.every(s => s === COMPONENT_CHECK.YES)) {
                         return 'preferable-build';
@@ -127,7 +128,7 @@ export default defineComponent({
                             days.push({
                                 date,
                                 compNames,
-                                dayItems
+                                compItems
                             });
                             finisedDays += 1;
                             searchResult.progress = `拼命加载中，完成 ${Math.min(Math.floor(finisedDays / totalDays * 100), 98)}%`;
@@ -156,6 +157,18 @@ export default defineComponent({
                         days.forEach(day => {
                             if (~day.compNames.indexOf(compName)) {
                                 row[day.date] = COMPONENT_CHECK.YES;
+                                const [{lastModified}] = day.compItems[compName];
+                                if (row.lastAvailable == null) {
+                                    row.lastAvailable = lastModified;
+                                    row.lastAvailableDisplay = moment(lastModified, 'YYYY-MM-DDTHH:mm:ss').format('YYYY-M-D');
+                                } else {
+                                    const c = moment(lastModified, 'YYYY-MM-DDTHH:mm:ss');
+                                    const o = moment(row.lastAvailable, 'YYYY-MM-DDTHH:mm:ss');
+                                    if (c.isAfter(o)) {
+                                        row.lastAvailable = lastModified;
+                                        row.lastAvailableDisplay = c.format('YYYY-M-D');
+                                    }
+                                }
                             } else {
                                 row[day.date] = COMPONENT_CHECK.NO;
                             }
