@@ -12,7 +12,7 @@ const checknum = {
     timestamp: new Date().getTime(),
     git: getGitInfo()
 };
-const entries = ['admin', 'admin2'];
+const entries = ['admin'];
 const DIST_PREFIX = resolve('dist');
 const BUILD_ASSETS_PUBLIC_ROOT = '';
 const BUILD_ASSETS_SUB_DIRECTORY = 'bundle/admin';

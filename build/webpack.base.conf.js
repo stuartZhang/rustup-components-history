@@ -26,7 +26,6 @@ module.exports = {
             './src/App.less',
             './src/sentry.ts',
             `./src/logger${suffix}.ts`,
-            
             `./src/${entry}.ts`
         ];
         return entries;
