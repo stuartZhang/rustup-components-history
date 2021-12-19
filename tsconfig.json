@@ -9,6 +9,7 @@
         "importHelpers": true,
         "incremental": false,
         "isolatedModules": true,
+        "noImplicitThis": false,
         "jsx": "preserve",
         "jsxFactory": "h",
         "lib": [

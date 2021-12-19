@@ -20,9 +20,17 @@
                     <el-button type="primary" @click.prevent.stop="onClick">查询</el-button>
                 </el-form-item>
             </el-form>
+            <div v-if="searchForm.selectedDate">
+                <label>安装指令：</label>
+                <ul>
+                    <li><code>rustup toolchain install --profile complete {{searchForm.channel}}-{{searchForm.selectedDate}}-{{searchForm.target}}</code></li>
+                    <li><code>rustup toolchain install --profile default {{searchForm.channel}}-{{searchForm.selectedDate}}-{{searchForm.target}}</code></li>
+                    <li><code>rustup toolchain install --profile minimal {{searchForm.channel}}-{{searchForm.selectedDate}}-{{searchForm.target}}</code></li>
+                </ul>
+            </div>
         </el-header>
         <el-main class="search-result">
-            <el-table height="100%" v-loading="searchResult.loading" :element-loading-text="searchResult.progress" :data="searchResult.data" border :header-cell-class-name="headCellClass">
+            <el-table height="100%" v-loading="searchResult.loading" :element-loading-text="searchResult.progress" :data="searchResult.data" border :header-cell-class-name="headCellClass" @header-click="onTableHeadClick">
                 <el-table-column fixed prop="name" label="组件" width="115" v-if="searchResult.data.length > 0" />
                 <el-table-column fixed prop="lastAvailableDisplay" label="最后发布时间" width="110" v-if="searchResult.data.length > 0" />
                 <el-table-column width="100" v-for="col of searchResult.columns" :key="col.label" :prop="col.label" :label="col.label" align="center">
@@ -36,17 +44,21 @@
     </el-container>
 </template>
 <script lang="ts">
-import {defineComponent, reactive, ref} from '@vue/composition-api';
+import {defineComponent, getCurrentInstance, reactive, ref} from '@vue/composition-api';
+import moment from 'moment';
 import pcLog from 'mx-general.macros/dist/log-sync.macro';
 import _ from 'underscore';
 export default defineComponent({
     name: 'Main',
     setup(props, context){ // eslint-disable-line max-lines-per-function
-        const axios = context.parent.$axios;
-        const moment = context.parent.$moment;
+        const vm = getCurrentInstance();
+        const axios = vm?.$axios;
         const searchFormRef = ref();
+        const endDate = moment();
+        const startDate = endDate.clone().subtract(7, 'days');
         const searchForm = reactive({
-            dateRange: [moment('2020-11-01', 'YYYY-MM-DD').toDate(), moment('2020-11-30', 'YYYY-MM-DD').toDate()],
+            dateRange: [startDate.toDate(), endDate.toDate()],
+            selectedDate: null,
             channel: 'nightly',
             channelCandidates: CHANNELS,
             target: 'x86_64-pc-windows-gnu',
@@ -58,7 +70,7 @@ export default defineComponent({
                     trigger: 'blur'
                 }, {
                     trigger: 'blur',
-                    validator(rule, value, callback){
+                    validator(rule: unknown, value: string, callback: (err?: Error) => void){
                         if (~CHANNELS.indexOf(value) || /^(\d+\.)+(\d+)$/u.test(value)) {
                             return callback();
                         }
@@ -73,7 +85,7 @@ export default defineComponent({
                 dateRange: [{
                     required: true,
                     trigger: 'blur',
-                    validator(rule, value, callback){
+                    validator(rule: unknown, value: unknown[], callback: (err?: Error) => void){
                         if (value.every(date => date instanceof Date)) {
                             return callback();
                         }
@@ -110,8 +122,8 @@ export default defineComponent({
                 if (searchResult.loading) {
                     return;
                 }
-                await new Promise((resolve, reject) => {
-                    searchFormRef.value.validate(valid => {
+                await new Promise<void>((resolve, reject) => {
+                    searchFormRef.value.validate((valid: boolean) => {
                         if (valid) {
                             resolve();
                         } else {
@@ -121,6 +133,7 @@ export default defineComponent({
                 });
                 try {
                     searchResult.loading = true;
+                    searchForm.selectedDate = null;
                     searchResult.data.length = searchResult.columns.length = 0;
                     searchResult.progress = '拼命加载中';
                     const [startMom, endMom] = searchForm.dateRange.map(date => moment(date));
@@ -191,15 +204,18 @@ export default defineComponent({
                         searchResult.loading = false;
                     }, 500);
                 }
+            },
+            onTableHeadClick(column, event){
+                searchForm.selectedDate = column.label;
             }
         };
-        function requestSingleDay(date){
+        function requestSingleDay(date: string){
             const postfix = `${searchForm.channel}-${searchForm.target}.tar.gz`;
             return request(date, '').then(result => result.filter(item => item.fileName.endsWith(postfix)).map(item => ({
                 ...item,
                 component: item.fileName.replace(`-${postfix}`, '')
             })));
-            function request(date, marker, result = []){
+            function request(date: string, marker: string, result = []){
                 return axios.get(`${RUST_HOST}/`, {
                     params: {
                         prefix: `dist/${date}`,
@@ -248,7 +264,7 @@ export default defineComponent({
         }
     }
 });
-function renderFileSize(n){
+function renderFileSize(n: number){
     if (n < 1024) {
         return `${renderTwo(n)} B`;
     }
@@ -262,7 +278,7 @@ function renderFileSize(n){
     }
     n = n / 1024;
     return `${renderTwo(n)} GiB`;
-    function renderTwo(n){
+    function renderTwo(n: number){
         return Math.round(n * 100) / 100;
     }
 }
